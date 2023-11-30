@@ -20,24 +20,24 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 config = configparser.ConfigParser()
 config.read("config.ini")
 
-REDIS_HOST = config.get("redis", host)
-REDIS_PORT = config.getint("redis", port)
-REDIS_PASSWORD = config.get("redis", password)
+REDIS_HOST = config.get("redis", "host")
+REDIS_PORT = config.getint("redis", "port")
+REDIS_PASSWORD = config.get("redis", "password")
 
 # Connect to Redis
 redis_client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD, decode_responses=True)
 
 # MongoDB connection details
-MONGO_URI = config.get("mongodb", uri)
-MONGO_DB = config.get("mongodb", db_name)
+MONGO_URI = config.get("mongodb", "uri")
+MONGO_DB = config.get("mongodb", "db_name")
 
 # Connect to MongoDB
 mongo_client = pymongo.MongoClient(MONGO_URI)
 db = mongo_client[MONGO_DB]
 
 #EmailCourier  
-auth_token = config.get("mail",auth_token)
-sendermail = config.get("mail",email)
+auth_token = config.get("mail","auth_token")
+sendermail = config.get("mail","email")
 client = Courier(auth_token=auth_token)
 
 st.set_page_config(
