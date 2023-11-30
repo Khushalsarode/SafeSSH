@@ -1,0 +1,10 @@
+redis
+uuid
+pydantic
+pymongo
+configparser
+streamlit
+cryptography
+streamlit_option_menu
+trycourier
+apscheduler
