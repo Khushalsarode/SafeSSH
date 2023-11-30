@@ -73,10 +73,6 @@ SafeSSH is a secure application designed to simplify the management of OpenSSH k
 2. Log in or create an account.
 3. Explore the intuitive interface to manage your SSH keys.
 
-## Contributing
-
-Contributions are welcome! Please check the [Contributing Guidelines](CONTRIBUTING.md) for more details.
-
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
