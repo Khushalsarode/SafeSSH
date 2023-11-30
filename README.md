@@ -1,4 +1,3 @@
-Certainly! Below is a comprehensive README for your SafeSSH project. Feel free to customize it further based on your preferences.
 
 ---
 
