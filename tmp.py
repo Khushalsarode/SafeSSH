@@ -1,4 +1,5 @@
 import random
+import re
 import time
 from urllib.parse import quote_plus
 import uuid
@@ -39,6 +40,13 @@ auth_token = config.get("mail","auth_token")
 sendermail = config.get("mail","email")
 client = Courier(auth_token=auth_token)
 
+st.set_page_config(
+        page_title="SafeSSH",
+        page_icon="key",
+        layout="wide",
+    )
+
+
 def is_username_unique(username):
     # Check if the username already exists in Redis
     return redis_client.hget("users", username) is None
@@ -62,6 +70,7 @@ def display_main_menu():
 
     # Add your main menu options here
     main_menu_option = option_menu("Main Menu", ["Add","Download", "Generate", "Delete","Rename", "Reset Password"],
+                                icons=['file-earmark-plus', 'cloud-arrow-down','pc','trash','recycle','file-lock2'],
                                     menu_icon="gear", default_index=0, orientation="horizontal")
     main_menu_option
     
@@ -70,14 +79,12 @@ def display_main_menu():
     
         # Handle other menu options here
     if main_menu_option == "Add":
-        st.write("Download functionality goes here.")
         add_keys()
 
     elif main_menu_option == "Download":
-        st.write("Generate functionality goes here.")
         download_keys()
     elif main_menu_option == "Generate":
-        st.write("Generate your SSH key pair here.")
+        st.title("Generate your SSH key pair here.")
         # Two equal columns:
         col1, col2 = st.columns(2)
         if col1.button("Generate SSH Key Pair"):
@@ -88,13 +95,10 @@ def display_main_menu():
     elif main_menu_option=="Rename":
         rename_server()
 
-                
-
     elif main_menu_option == "Delete":
-        st.write("Delete functionality goes here.")  
         delete_keys() 
     elif main_menu_option == "Reset Password":
-        st.write("Delete functionality goes here.")
+       st.title("Reset Password")
 
 # Function to delete keys
 def generate_and_save_ssh_key_pair():
@@ -437,9 +441,14 @@ else:
     # Display the login or create account page based on the selected option
     with st.sidebar:
         authentication = option_menu("Authentication", ["Login", 'Create Account','Forgot Username','Forgot Password'], 
-            icons=['door-open', 'person-plus-fill','person-fill-exclamation','person-x'], menu_icon="cast", default_index=0)
-
+            icons=['door-open', 'person-plus-fill','person-fill-exclamation','person-x'], menu_icon="person-circle", default_index=0)
+    st.markdown("<h1 style='text-align: center; color: white;'>SafeSSH</h1>", unsafe_allow_html=True)
+    
     if authentication == "Login":
+        st.info("Secured Storage 🔐")
+        st.info("Anytime Accessibility 🌐")
+        st.info("Trustworthy and Reliable 🛡️💼")
+        st.info("User-Friendly Interface 🤝")
         # Your login logic here
         username = st.text_input("Username")
         password = st.text_input("Password", type="password")
@@ -460,8 +469,8 @@ else:
                     st.error("Invalid password. Please try again.")
             else:
                 st.error("Username not found. Please check your username or create a new account.")
+    
     elif authentication == "Create Account":
-        # Your account creation logic here
         st.title("Create Account")
 
         # Input fields
@@ -470,19 +479,23 @@ else:
         username = st.text_input("Username")
         password = st.text_input("Password", type="password")
 
-
         # Create Account button
         if st.button("Create Account"):
-            # Validate email and check for unique username
-            if is_username_unique(username):
-                # Store user information in Redis
-                user_data = {"name": name, "email": email, "username": username, "password": password}
-                redis_client.hset("users", username, str(user_data))
-                st.success(f"Account created for {username}!")
-                st.balloons()
-            else:
-                if not is_username_unique(username):
+            # Validate email format, check for unique username, and ensure password length
+            if re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                if is_username_unique(username):
+                    if len(password) >= 8:
+                        # Store user information in Redis
+                        user_data = {"name": name, "email": email, "username": username, "password": password}
+                        redis_client.hset("users", username, str(user_data))
+                        st.success(f"Account created for {username}!")
+                        st.balloons()
+                    else:
+                        st.error("Password must be 8 characters or more.")
+                else:
                     st.error("Username already exists. Please choose a different username.")
+            else:
+                st.error("Please enter a valid email address.")
 
     elif authentication=="Forgot Password":
         username = st.text_input("Enter your username:")
@@ -525,15 +538,29 @@ else:
             else:
                 st.error("No account found with the provided email. Please check your information.")
 
+
+
+
 # Always display the logout button
 if is_user_logged_in():
     st.sidebar.button("Logout", on_click=logout)
 
+
+
+
 import os
 from datetime import datetime, timedelta
 import time
+from apscheduler.schedulers.background import BackgroundScheduler
 
-def delete_files_except(folder_path, exclude_folders, exclude_files):
+def delete_files_except():
+    # Specify folder path
+    folder_path = "C:/Users/HP.KHUSHALSARODE.000/Desktop/sshm/"
+
+    # Specify folders and files to exclude from deletion
+    exclude_folders = ["temp", "venv"]
+    exclude_files = ["config.ini", "requirements.txt", "tmp.py",".gitignore"]
+
     # Get all files in the folder
     all_files = []
     for root, dirs, files in os.walk(folder_path):
@@ -561,14 +588,8 @@ def delete_files_except(folder_path, exclude_folders, exclude_files):
             except Exception as e:
                 print(f"Error deleting file {file_path}: {e}")
 
-# Specify folder path
-folder_path = "C:/Users/HP.KHUSHALSARODE.000/Desktop/sshm/"
+# Schedule the cleanup function to run periodically (e.g., daily)
+scheduler = BackgroundScheduler()
+scheduler.add_job(delete_files_except, 'interval', days=1)  # Adjust the schedule as needed
+scheduler.start()
 
-# Specify folders and files to exclude from deletion
-exclude_folders = ["temp", "venv"]
-exclude_files = ["config.ini", "requirements.txt", "tmp.py",".gitignore"]
-
-# Run the deletion script every second
-while True:
-    delete_files_except(folder_path, exclude_folders, exclude_files)
-    time.sleep(1)
