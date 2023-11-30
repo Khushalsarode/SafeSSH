@@ -77,9 +77,4 @@ SafeSSH is a secure application designed to simplify the management of OpenSSH k
 
 This project is licensed under the [MIT License](LICENSE).
 
-## Acknowledgments
-
-- Thanks to the creators of Streamlit, Redis, and MongoDB for providing powerful tools for application development.
-- Special acknowledgment to the Streamlit community for helpful discussions and insights.
-
 ---
