@@ -17,29 +17,56 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 
 # Load credentials from the config file
-config = configparser.ConfigParser()
-config.read("config.ini")
+#config = configparser.ConfigParser()
+#config.read("config.ini")
 
-#REDIS_HOST = config.get("redis", "host")
-REDIS_HOST =config["redis"]["host"]
+
+'''
+STREAMLIT CONFIG CODE
+# Everything is accessible via the st.secrets dict:
+st.write("DB username:", st.secrets["db_username"])
+st.write("DB password:", st.secrets["db_password"])
+st.write("My cool secrets:", st.secrets["my_cool_secrets"]["things_i_like"])
+
+# And the root-level secrets are also accessible as environment variables:
+st.write(
+    "Has environment variables been set:",
+    os.environ["db_username"] == st.secrets["db_username"],
+)
+
+REDIS_HOST = config.get("redis", "host")
+#REDIS_HOST =config["redis"]["host"]
 REDIS_PORT = config.getint("redis", "port")
 REDIS_PASSWORD = config.get("redis", "password")
+'''
+REDIS_HOST = st.secrets["redis"]["host"]
+REDIS_PORT = st.secrets["redis"]["port"]
+REDIS_PASSWORD = st.secrets["redis"]["password"]
 
 # Connect to Redis
 redis_client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD, decode_responses=True)
-
+'''
 # MongoDB connection details
 MONGO_URI = config.get("mongodb", "uri")
 MONGO_DB = config.get("mongodb", "db_name")
+'''
+MONGO_URI = st.secrets["mongodb"]["uri"]
+MONGO_DB = st.secrets["mongodb"]["db_name"]
 
 # Connect to MongoDB
 mongo_client = pymongo.MongoClient(MONGO_URI)
 db = mongo_client[MONGO_DB]
 
+'''
 #EmailCourier  
 auth_token = config.get("mail","auth_token")
 sendermail = config.get("mail","email")
+'''
+auth_token = st.secrets["mail"]["auth_token"]
+sendermail = st.secrets["mail"]["email"]
+
 client = Courier(auth_token=auth_token)
+
 
 st.set_page_config(
         page_title="SafeSSH",
