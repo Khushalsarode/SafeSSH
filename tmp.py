@@ -20,7 +20,8 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 config = configparser.ConfigParser()
 config.read("config.ini")
 
-REDIS_HOST = config.get("redis", "host")
+#REDIS_HOST = config.get("redis", "host")
+REDIS_HOST =config["redis"]["host"]
 REDIS_PORT = config.getint("redis", "port")
 REDIS_PASSWORD = config.get("redis", "password")
 
