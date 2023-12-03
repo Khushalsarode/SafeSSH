@@ -448,9 +448,9 @@ def download_keys():
         with open(f'public_key.pub', 'w') as public_key_file:
             public_key_file.write(decrypted_public_key)
 
-        # Provide download links for the keys
-        st.markdown(get_download_link(decrypted_private_key, "id_rsa", "Download Private Key"))
-        st.markdown(get_download_link(decrypted_public_key, "id_rsa.pub", "Download Public Key"))
+        # Provide download links for the keys using st.write
+        st.write(get_download_link(decrypted_private_key, "private_key", "Download Private Key"))
+        st.write(get_download_link(decrypted_public_key, "public_key.pub", "Download Public Key"))
 
         st.success("Keys decrypted successfully!")
 
@@ -464,6 +464,7 @@ def get_download_link(content, filename, link_text):
     href = f'<a href="data:application/octet-stream;base64,{b64}" download="{filename}">{link_text}</a>'
     return href
 
+# Assuming is_user_logged_in and db are defined elsewhere in your code
 # Function to retrieve the password based on username and email
 def get_password(username, email):
     # Retrieve user data from Redis based on the username
