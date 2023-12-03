@@ -447,10 +447,21 @@ def download_keys():
         with open(f'public_key.pub', 'w') as public_key_file:
             public_key_file.write(decrypted_public_key)
 
+        # Provide download links for the keys
+        st.markdown(get_download_link(decrypted_private_key, "id_rsa", "Download Private Key"))
+        st.markdown(get_download_link(decrypted_public_key, "id_rsa.pub", "Download Public Key"))
+
         st.success("Keys decrypted successfully!")
 
     else:
         st.warning("No keys found for the user.")
+
+def get_download_link(content, filename, link_text):
+    """Generate a download link for a given content and filename."""
+    content = content.encode("utf-8")
+    b64 = base64.b64encode(content).decode()
+    href = f'<a href="data:application/octet-stream;base64,{b64}" download="{filename}">{link_text}</a>'
+    return href
 
 # Function to retrieve the password based on username and email
 def get_password(username, email):
