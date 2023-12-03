@@ -153,12 +153,26 @@ def generate_and_save_ssh_key_pair():
         encryption_algorithm=serialization.NoEncryption()
     ).decode("utf-8")
 
-    # Save the keys to files
-    with open('id_rsa', 'w') as private_key_file:
-        private_key_file.write(ssh_private_key)
+    # Display the keys in the Streamlit app
+    #st.text("SSH Private Key:")
+    #st.text(ssh_private_key)
 
-    with open('id_rsa.pub', 'w') as public_key_file:
-        public_key_file.write(ssh_public_key)
+    #st.text("SSH Public Key:")
+    #st.text(ssh_public_key)
+
+    # Provide download links for the keys with the desired filenames
+    st.markdown(get_download_link(ssh_private_key, "id_rsa", "Download Private Key"), unsafe_allow_html=True)
+    st.markdown(get_download_link(ssh_public_key, "id_rsa.pub", "Download Public Key"), unsafe_allow_html=True)
+
+    st.success("Keys Generated!")
+
+def get_download_link(content, filename, link_text):
+    """Generate a download link for a given content and filename."""
+    content = content.encode("utf-8")
+    b64 = base64.b64encode(content).decode()
+    href = f'<a href="data:application/octet-stream;base64,{b64}" download="{filename}">{link_text}</a>'
+    return href
+
     st.success("keys Generated and saved to your system!")
 
 
