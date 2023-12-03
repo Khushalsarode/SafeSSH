@@ -16,6 +16,14 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 
+
+
+st.set_page_config(
+        page_title="SafeSSH",
+        page_icon="key",
+        layout="wide",
+    )
+
 # Load credentials from the config file
 #config = configparser.ConfigParser()
 #config.read("config.ini")
@@ -68,11 +76,6 @@ sendermail = st.secrets["mail"]["email"]
 client = Courier(auth_token=auth_token)
 
 
-st.set_page_config(
-        page_title="SafeSSH",
-        page_icon="key",
-        layout="wide",
-    )
 
 
 def is_username_unique(username):
